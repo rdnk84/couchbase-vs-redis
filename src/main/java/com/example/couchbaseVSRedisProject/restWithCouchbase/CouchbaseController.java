@@ -1,7 +1,7 @@
 package com.example.couchbaseVSRedisProject.restWithCouchbase;
 
 
-import com.couchbase.client.java.json.JsonObject;
+import com.example.couchbaseVSRedisProject.POJO.POJODoc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ public class CouchbaseController {
         this.mainService = mainService;
     }
 
-    @GetMapping("/{id}")
-    public JsonObject retrieveDocByKey(@PathVariable String docID) {
+    @GetMapping("/{docID}")
+    public POJODoc retrieveDocByKey(@PathVariable String docID) throws JsonProcessingException {
 
         return mainService.retrievingDoc(docID);
 

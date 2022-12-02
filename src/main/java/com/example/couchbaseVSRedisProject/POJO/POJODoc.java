@@ -1,4 +1,4 @@
-package com.example.couchbaseVSRedisProject.restWithCouchbase;
+package com.example.couchbaseVSRedisProject.POJO;
 
 import java.util.ArrayList;
 
