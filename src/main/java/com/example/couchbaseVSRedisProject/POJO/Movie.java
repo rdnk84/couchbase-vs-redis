@@ -29,4 +29,13 @@ public class Movie {
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
     }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id=" + id +
+                ", movieName='" + movieName + '\'' +
+                ", movieDescription='" + movieDescription + '\'' +
+                '}';
+    }
 }
