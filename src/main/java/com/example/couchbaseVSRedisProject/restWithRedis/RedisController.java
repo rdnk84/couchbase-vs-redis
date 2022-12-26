@@ -17,7 +17,7 @@ public class RedisController {
 
     @GetMapping("/{keyOfDocument}")
     public String getDocument(@PathVariable(value = "keyOfDocument") String keyOfDocument) {
-        return redisService.getDocument();
+        return redisService.getDocument(keyOfDocument);
     }
 
     @PostMapping("/")

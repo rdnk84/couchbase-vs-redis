@@ -20,22 +20,28 @@ public class RedisService {
         this.jedisPool = jedisPool;
     }
 
-    public String getDocument() {
+    public String getDocument(String key) {
+         String valueOfDocument = null;
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.get("");
+            valueOfDocument = jedis.get(key);
         }
-        return null;
+        return valueOfDocument;
     }
 
     public void saveDocument(Movie movie) {
-        UUID uuid = UUID.randomUUID();
-        String newIDGenerated = uuid.toString();
+
+//        UUID uuid = UUID.randomUUID();
+//        String newIDGenerated = uuid.toString();
+        String movieID = movie.getId().toString();
         String jsonDocument = movie.toString();
 
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.set(newIDGenerated, jsonDocument);
+            jedis.set(movieID, jsonDocument);
+//            String s = jedis.get(newIDGenerated);
         } catch (Exception e) {
-            Logger.getLogger("caught exception: " + e.getMessage());
+            System.out.println("caught exception: " + e.getMessage());
+
         }
+
     }
 }
