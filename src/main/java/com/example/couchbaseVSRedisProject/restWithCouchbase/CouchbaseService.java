@@ -5,71 +5,62 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
+import com.example.couchbaseVSRedisProject.POJO.Movie;
 import com.example.couchbaseVSRedisProject.POJO.POJODoc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class CouchbaseService {
 
+    private final Cluster couchbaseCluster;
+    @Autowired
+    public CouchbaseService(Cluster couchbaseCluster) {
+        this.couchbaseCluster = couchbaseCluster;
+    }
     static String bucketName = "Bucket1";
 
-    public POJODoc handleUpsertData(ObjectNode object) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String fromObjToString = object.toPrettyString();
 
-        POJODoc newObj = objectMapper.readValue(fromObjToString, POJODoc.class);
-        Cluster cluster = ClusterSingleton.getInstance();
-        Bucket bucket = cluster.bucket(bucketName);
-        UUID uuid = UUID.randomUUID();
-        String newIDGenerated = uuid.toString();
-//        newObj.setId(newIDGenerated);
-//        newObj.setSomeText("blablabla");
+    public Movie saveDocument(Movie movie) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String key = UUID.randomUUID().toString();
+        movie.setId(key);
+        String resultAsString = null;
         try {
-            bucket.defaultCollection().upsert(newIDGenerated, object);
-            System.out.println("OK");
+            Bucket bucket = couchbaseCluster.bucket(bucketName);
+            bucket.defaultCollection().upsert(key, movie);
+            GetResult result = bucket.defaultCollection().get(key);
+            JsonObject jsonObject = result.contentAsObject();
+            resultAsString = jsonObject.toString();
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        return newObj;
-//    cluster.disconnect();
-    }
-
-
-    public POJODoc retrievingDoc(String key) throws JsonProcessingException {
-        Cluster cluster = ClusterSingleton.getInstance();
-        Bucket bucket = cluster.bucket(bucketName);
-        Collection newCollection = bucket.defaultCollection();
-        GetResult result = newCollection.get(key);
-        JsonObject obj = result.contentAsObject();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String strObj = obj.toString();
-        POJODoc retrievedDocument = objectMapper.readValue(strObj, POJODoc.class);
-//    cluster.disconnect();
+        Logger.getLogger(this.getClass().getSimpleName()).info("savedDocument: " + resultAsString);
+        Movie retrievedDocument = objectMapper.readValue(resultAsString, Movie.class);
         return retrievedDocument;
     }
 
-//    public String handleUpsertData(ObjectNode object) {
-//
-//        Cluster cluster = ClusterSingleton.getInstance();
-//        Bucket bucket = cluster.bucket(bucketName);
-//        UUID uuid = UUID.randomUUID();
-//        String newIDGenerated = uuid.toString();
-//
-//        try {
-//            //как я меняю id?
-//            bucket.defaultCollection().upsert(newIDGenerated, object);
-//            System.out.println("OK");
-//        } catch (Exception e) {
-//            System.out.println("ERROR: " + e.getMessage());
-//        }
-//        return newObj;
-////    cluster.disconnect();
-//    }
+
+    public Movie getDocument(String key) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String resultAsString = null;
+        try {
+            Bucket bucket = couchbaseCluster.bucket(bucketName);
+            GetResult result = bucket.defaultCollection().get(key);
+            JsonObject jsonObject = result.contentAsObject();
+            resultAsString = jsonObject.toString();
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+        Movie retrievedDocument = objectMapper.readValue(resultAsString, Movie.class);
+        Logger.getLogger(this.getClass().getSimpleName()).info("retrievedDocument: " + resultAsString);
+        return retrievedDocument;
+    }
 
 
 }

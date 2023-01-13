@@ -2,15 +2,15 @@ package com.example.couchbaseVSRedisProject.POJO;
 
 public class Movie {
 
-    public Long id;
+    public String id;
     public String movieName;
     public String movieDescription;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

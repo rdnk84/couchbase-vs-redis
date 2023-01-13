@@ -19,10 +19,7 @@ public class JedisConfig {
     @Value("${spring.redis.port:6379}")
     private int port;
 
-//    @Bean
-//    JedisConnectionFactory jedisConnectionFactory() {
-//        return new JedisConnectionFactory();
-//    }
+
 
     public JedisPoolConfig buildPoolConfig() {
         final JedisPoolConfig poolConfig = new JedisPoolConfig();
@@ -41,7 +38,6 @@ public class JedisConfig {
 
     final JedisPoolConfig poolConfig = buildPoolConfig();
 
-    //    JedisPool jedisPool = new JedisPool(poolConfig, "localhost");
     @Bean
     JedisPool jedisPool() {
         return new JedisPool(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT, password);

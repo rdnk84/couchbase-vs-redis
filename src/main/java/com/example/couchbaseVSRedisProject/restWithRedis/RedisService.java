@@ -1,11 +1,15 @@
 package com.example.couchbaseVSRedisProject.restWithRedis;
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
+import com.example.couchbaseVSRedisProject.restWithPostgres.PostgresService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xml.internal.serialize.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.SerializationUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -20,28 +24,32 @@ public class RedisService {
         this.jedisPool = jedisPool;
     }
 
-    public String getDocument(String key) {
-         String valueOfDocument = null;
+    public Movie getDocument(String key) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String requestedMovie = null;
         try (Jedis jedis = jedisPool.getResource()) {
-            valueOfDocument = jedis.get(key);
+            requestedMovie = jedis.get(key);
         }
-        return valueOfDocument;
+        Movie retrievedDocument = mapper.readValue(requestedMovie, Movie.class);
+        return retrievedDocument;
     }
 
-    public void saveDocument(Movie movie) {
-
-//        UUID uuid = UUID.randomUUID();
-//        String newIDGenerated = uuid.toString();
-        String movieID = movie.getId().toString();
-        String jsonDocument = movie.toString();
-
+    public Movie saveDocument(Movie movie) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String key = UUID.randomUUID().toString();
+        movie.setId(key);
+        String movieAsJsonString = mapper.writeValueAsString(movie);
+        String retrieveDocument = null;
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.set(movieID, jsonDocument);
-//            String s = jedis.get(newIDGenerated);
+            jedis.set(key, movieAsJsonString);
+            retrieveDocument = jedis.get(key);
+
         } catch (Exception e) {
             System.out.println("caught exception: " + e.getMessage());
-
         }
+        Logger.getLogger(this.getClass().getSimpleName()).info("retrievedDocument: " + retrieveDocument);
+        Movie retrievedDocument = mapper.readValue(retrieveDocument, Movie.class);
+        return retrievedDocument;
 
     }
 }

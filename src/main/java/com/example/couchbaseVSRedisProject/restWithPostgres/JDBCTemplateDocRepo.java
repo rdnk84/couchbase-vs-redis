@@ -18,7 +18,7 @@ public class JDBCTemplateDocRepo implements DocumentsRepository {
 
     RowMapper<Movie> rowMapper = ((rs, rowNum) -> {
         Movie movie = new Movie();
-        movie.setId(rs.getLong("id"));
+        movie.setId(rs.getString("id"));
         movie.setMovieName(rs.getString("name"));
         movie.setMovieDescription("description");
         return movie;

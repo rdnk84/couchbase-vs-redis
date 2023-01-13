@@ -2,7 +2,9 @@ package com.example.couchbaseVSRedisProject.POJO;
 
 import java.util.ArrayList;
 
+
 public class POJODoc {
+
 
     public Long id;
     public String name;

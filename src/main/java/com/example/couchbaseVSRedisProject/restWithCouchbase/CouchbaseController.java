@@ -1,9 +1,9 @@
 package com.example.couchbaseVSRedisProject.restWithCouchbase;
 
 
+import com.example.couchbaseVSRedisProject.POJO.Movie;
 import com.example.couchbaseVSRedisProject.POJO.POJODoc;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,29 +11,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/couchbase")
 public class CouchbaseController {
 
-    private final CouchbaseService mainService;
+    private final CouchbaseService couchbaseService;
 
     @Autowired
     public CouchbaseController(CouchbaseService mainService) {
-        this.mainService = mainService;
+        this.couchbaseService = mainService;
     }
 
-    @GetMapping("/{docID}")
-    public POJODoc retrieveDocByKey(@PathVariable String docID) throws JsonProcessingException {
-
-        return mainService.retrievingDoc(docID);
-
+    @GetMapping("/getMovie/{key}")
+    public Movie retrieveDocByKey(@PathVariable(value = "key") String key) throws JsonProcessingException {
+        return couchbaseService.getDocument(key);
     }
 
-    @PostMapping("/postData")
-    public POJODoc insertNewDoc(@RequestBody ObjectNode object) throws JsonProcessingException {
-        return mainService.handleUpsertData(object);
-
+    @PostMapping("/saveMovie/postData")
+    public Movie saveDocument(@RequestBody Movie movie) throws JsonProcessingException {
+        return couchbaseService.saveDocument(movie);
     }
 
-//    @PostMapping("/postData")
-//    public String insertNewDoc(@RequestBody ObjectNode object)  {
-//        return mainService.handleUpsertData(object);
-//
-//    }
 }

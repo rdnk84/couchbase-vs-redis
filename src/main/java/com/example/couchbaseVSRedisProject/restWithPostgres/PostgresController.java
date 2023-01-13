@@ -20,7 +20,8 @@ public class PostgresController {
 
     @GetMapping("/allMovies")
     public List<Movie> allMovies() {
-         return postgresService.getAllMovies();
+
+        return postgresService.getAllMovies();
     }
 
     @PostMapping("/addMovie")
