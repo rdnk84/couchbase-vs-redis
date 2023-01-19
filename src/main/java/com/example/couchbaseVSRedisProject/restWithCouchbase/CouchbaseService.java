@@ -23,6 +23,7 @@ public class CouchbaseService {
     public CouchbaseService(Cluster couchbaseCluster) {
         this.couchbaseCluster = couchbaseCluster;
     }
+
     static String bucketName = "Bucket1";
 
 

@@ -1,13 +1,10 @@
 package com.example.couchbaseVSRedisProject.restWithRedis;
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
-import com.example.couchbaseVSRedisProject.restWithPostgres.PostgresService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xml.internal.serialize.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.SerializationUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

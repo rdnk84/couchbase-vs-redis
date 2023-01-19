@@ -20,6 +20,10 @@ public class PostgresService {
         return docRepo.findAll();
     }
 
+    public Movie getMovie(String ID) {
+        return docRepo.findById(ID);
+    }
+
     public void saveMovie(Movie movie) {
         docRepo.save(movie);
     }

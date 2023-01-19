@@ -21,8 +21,6 @@ public class CouchbaseConfig {
 
     @Bean
     Cluster couchbaseCluster() {
-//        Cluster newCluster = Cluster.connect(connectionString, ClusterOptions.clusterOptions(username, password));
-//        return newCluster;
         return Cluster.connect(connectionString, ClusterOptions.clusterOptions(username, password));
     }
 

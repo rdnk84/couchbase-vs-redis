@@ -35,16 +35,17 @@ public class JDBCTemplateDocRepo implements DocumentsRepository {
         return jdbcTemplate.update(sql, movie.getMovieName(), movie.getMovieDescription());
     }
 
-
-
     @Override
     public int update(String updatedDoc) {
         return 0;
     }
 
+
+
     @Override
-    public String findById(Long ID) {
-        return null;
+    public Movie findById(String ID) {
+        return jdbcTemplate.query("SELECT * FROM Movies WHERE id=?", new Object[]{ID}, new BeanPropertyRowMapper<>(Movie.class))
+                .stream().findAny().orElse(null);
     }
 
     @Override
@@ -69,14 +70,5 @@ public class JDBCTemplateDocRepo implements DocumentsRepository {
         return 0;
     }
 
-    //    @Override
-//    public int save(Movie movie) {
-//        return jdbcTemplate.update("INSERT INTO movies (name, description) VALUES(?,?)",
-//                new Object[] { movie.getMovieName(), movie.getMovieDescription() });
-//    }
-//
-//    @Override
-//    public List<Movie> findAll(){
-//        jdbcTemplate.execute("SELECT * from movies");
-//    }
+
 }

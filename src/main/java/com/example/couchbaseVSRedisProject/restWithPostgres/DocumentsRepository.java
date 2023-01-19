@@ -9,19 +9,19 @@ import java.util.List;
 @Repository
 public interface DocumentsRepository {
 
-int save(Movie movie);
+    int save(Movie movie);
 
-int update(String updatedDoc);
+    int update(String updatedDoc);
 
-String findById(Long ID);
+    Movie findById(String ID);
 
-int deleteById(Long ID);
+    int deleteById(Long ID);
 
-//List<String> findAll();
-List<Movie> findAll();
 
-List<String> findByDocContaining(String word);
+    List<Movie> findAll();
 
-int deleteAll();
+    List<String> findByDocContaining(String word);
+
+    int deleteAll();
 
 }
