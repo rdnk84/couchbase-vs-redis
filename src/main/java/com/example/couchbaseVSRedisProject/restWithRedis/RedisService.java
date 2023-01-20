@@ -23,12 +23,14 @@ public class RedisService {
 
     public Movie getDocument(String key) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        String requestedMovie = null;
+        String requestedMovie;
         try (Jedis jedis = jedisPool.getResource()) {
             requestedMovie = jedis.get(key);
         }
-        Movie retrievedDocument = mapper.readValue(requestedMovie, Movie.class);
-        return retrievedDocument;
+        if (requestedMovie != null) {
+            return mapper.readValue(requestedMovie, Movie.class);
+        }
+        return null;
     }
 
     public Movie saveDocument(Movie movie) throws JsonProcessingException {

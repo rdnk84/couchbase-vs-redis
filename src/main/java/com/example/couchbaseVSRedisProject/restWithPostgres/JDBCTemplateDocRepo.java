@@ -44,6 +44,7 @@ public class JDBCTemplateDocRepo implements DocumentsRepository {
 
     @Override
     public Movie findById(String ID) {
+//        Integer id = Integer.parseInt(ID);
         return jdbcTemplate.query("SELECT * FROM Movies WHERE id=?", new Object[]{ID}, new BeanPropertyRowMapper<>(Movie.class))
                 .stream().findAny().orElse(null);
     }
