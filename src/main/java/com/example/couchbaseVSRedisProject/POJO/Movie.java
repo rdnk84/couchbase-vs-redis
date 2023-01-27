@@ -1,17 +1,21 @@
 package com.example.couchbaseVSRedisProject.POJO;
 
-public class Movie {
+import org.springframework.jdbc.core.ResultSetExtractor;
 
-    public String id;
+import java.util.UUID;
+
+public class Movie  {
+
+    public String movieID;
     public String movieName;
     public String movieDescription;
 
-    public String getId() {
-        return id;
+    public String getMovieID() {
+        return movieID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMovieID(String movieID) {
+        this.movieID = movieID;
     }
 
     public String getMovieName() {
@@ -33,7 +37,7 @@ public class Movie {
     @Override
     public String toString() {
         return "Movie{" +
-                "id=" + id +
+                "id=" + movieID +
                 ", movieName='" + movieName + '\'' +
                 ", movieDescription='" + movieDescription + '\'' +
                 '}';

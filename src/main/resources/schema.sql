@@ -11,10 +11,22 @@ info json NOT NULL
 );
 
 CREATE TABLE movies(
-id serial NOT NULL PRIMARY KEY,
+id VARCHAR(250) DEFAULT NULL,
 name VARCHAR(250) NOT NULL,
 description VARCHAR(250) NOT NULL
 );
+
+--CREATE TABLE movies(
+--id uuid DEFAULT uuid_generate_v4(),
+--name VARCHAR(250) NOT NULL,
+--description VARCHAR(250) NOT NULL
+--);
+
+--CREATE TABLE movies(
+--id serial NOT NULL PRIMARY KEY,
+--name VARCHAR(250) NOT NULL,
+--description VARCHAR(250) NOT NULL
+--);
 
 --CREATE TABLE authors(
 --id INT PRIMARY KEY,

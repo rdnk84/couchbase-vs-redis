@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 public class CouchbaseService {
 
     private final Cluster couchbaseCluster;
+
     @Autowired
     public CouchbaseService(Cluster couchbaseCluster) {
         this.couchbaseCluster = couchbaseCluster;
@@ -30,12 +31,13 @@ public class CouchbaseService {
     public Movie saveDocument(Movie movie) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String key = UUID.randomUUID().toString();
-        movie.setId(key);
+        movie.setMovieID(key);
+        String keyForCouchbase = key.toString();
         String resultAsString = null;
         try {
             Bucket bucket = couchbaseCluster.bucket(bucketName);
-            bucket.defaultCollection().upsert(key, movie);
-            GetResult result = bucket.defaultCollection().get(key);
+            bucket.defaultCollection().upsert(keyForCouchbase, movie);
+            GetResult result = bucket.defaultCollection().get(keyForCouchbase);
             JsonObject jsonObject = result.contentAsObject();
             resultAsString = jsonObject.toString();
         } catch (Exception e) {

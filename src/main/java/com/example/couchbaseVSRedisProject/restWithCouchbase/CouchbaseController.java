@@ -23,7 +23,7 @@ public class CouchbaseController {
         return couchbaseService.getDocument(key);
     }
 
-    @PostMapping("/saveMovie/postData")
+    @PostMapping("/movie")
     public Movie saveDocument(@RequestBody Movie movie) throws JsonProcessingException {
         return couchbaseService.saveDocument(movie);
     }

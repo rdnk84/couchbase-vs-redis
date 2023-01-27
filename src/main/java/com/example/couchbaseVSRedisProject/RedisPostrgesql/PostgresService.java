@@ -1,10 +1,11 @@
-package com.example.couchbaseVSRedisProject.restWithPostgres;
+package com.example.couchbaseVSRedisProject.RedisPostrgesql;
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PostgresService {
@@ -20,11 +21,19 @@ public class PostgresService {
         return docRepo.findAll();
     }
 
-    public Movie getMovie(String ID) {
-        return docRepo.findById(ID);
+   public Movie findById(String id){
+        return docRepo.findById(id);
+   }
+
+    public Movie saveMovie(Movie movie) {
+        String key = UUID.randomUUID().toString();
+        movie.setMovieID(key);
+        docRepo.save(movie);
+        return findById(key);
     }
 
-    public void saveMovie(Movie movie) {
-        docRepo.save(movie);
+    public Movie updateMovie(Movie movie, String id) {
+        docRepo.update(movie, id);
+        return findById(id);
     }
 }

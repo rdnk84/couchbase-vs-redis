@@ -1,4 +1,4 @@
-package com.example.couchbaseVSRedisProject.restWithRedis;
+package com.example.couchbaseVSRedisProject.RedisPostrgesql;
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 
