@@ -11,7 +11,7 @@ public class MovieMapper implements ResultSetExtractor {
     @Override
     public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
         Movie movie = new Movie();
-        movie.setMovieID(rs.getString("id"));
+        movie.setMovieId(rs.getString("id"));
         movie.setMovieName(rs.getString("name"));
         movie.setMovieDescription(rs.getString("description"));
         return movie;

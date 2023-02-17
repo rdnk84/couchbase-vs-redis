@@ -19,33 +19,26 @@ import java.util.logging.Logger;
 public class CouchbaseService {
 
     private final Cluster couchbaseCluster;
+    static String bucketName = "Bucket1";
 
     @Autowired
     public CouchbaseService(Cluster couchbaseCluster) {
         this.couchbaseCluster = couchbaseCluster;
     }
 
-    static String bucketName = "Bucket1";
-
-
     public Movie saveDocument(Movie movie) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String key = UUID.randomUUID().toString();
-        movie.setMovieID(key);
-        String keyForCouchbase = key.toString();
-        String resultAsString = null;
+        movie.setMovieId(key);
         try {
             Bucket bucket = couchbaseCluster.bucket(bucketName);
-            bucket.defaultCollection().upsert(keyForCouchbase, movie);
-            GetResult result = bucket.defaultCollection().get(keyForCouchbase);
-            JsonObject jsonObject = result.contentAsObject();
-            resultAsString = jsonObject.toString();
+            bucket.defaultCollection().upsert(key, movie);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        Logger.getLogger(this.getClass().getSimpleName()).info("savedDocument: " + resultAsString);
-        Movie retrievedDocument = objectMapper.readValue(resultAsString, Movie.class);
-        return retrievedDocument;
+        Movie movieId = new Movie(key);
+        Logger.getLogger(this.getClass().getSimpleName()).info("savedDocument: " + movieId.getMovieId());
+        return movieId;
     }
 
 
@@ -61,7 +54,7 @@ public class CouchbaseService {
             System.out.println("ERROR: " + e.getMessage());
         }
         Movie retrievedDocument = objectMapper.readValue(resultAsString, Movie.class);
-        Logger.getLogger(this.getClass().getSimpleName()).info("retrievedDocument: " + resultAsString);
+        Logger.getLogger(this.getClass().getSimpleName()).info("retrievedDocument: " + retrievedDocument.getMovieId());
         return retrievedDocument;
     }
 

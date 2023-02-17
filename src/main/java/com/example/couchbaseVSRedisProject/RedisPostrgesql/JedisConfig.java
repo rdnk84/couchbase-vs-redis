@@ -16,7 +16,7 @@ public class JedisConfig {
     private String password;
     @Value("${spring.redis.host:localhost}")
     private String host;
-    @Value("${spring.redis.port:6379}")
+    @Value("${spring.redis.port:12346}")
     private int port;
 
 

@@ -10,9 +10,9 @@ public interface DocumentsRepository {
 
     int update(String updatedDoc);
 
-    String findById(Long ID);
+    String findById(Long Id);
 
-    int deleteById(Long ID);
+    int deleteById(Long Id);
 
     List<Object> findAll();
 

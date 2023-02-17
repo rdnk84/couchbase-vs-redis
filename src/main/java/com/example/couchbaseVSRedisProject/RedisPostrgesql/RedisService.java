@@ -1,5 +1,6 @@
 package com.example.couchbaseVSRedisProject.RedisPostrgesql;
 
+
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,18 +37,16 @@ public class RedisService {
     public Movie saveDocument(Movie movie) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String key = UUID.randomUUID().toString();
-        movie.setMovieID(key);
+        movie.setMovieId(key);
         String movieAsJsonString = mapper.writeValueAsString(movie);
-        String retrieveDocument = null;
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.set(key, movieAsJsonString);
-            retrieveDocument = jedis.get(key);
         } catch (Exception e) {
             System.out.println("caught exception: " + e.getMessage());
         }
-        Logger.getLogger(this.getClass().getSimpleName()).info("retrievedDocument: " + retrieveDocument);
-        Movie retrievedDocument = mapper.readValue(retrieveDocument, Movie.class);
-        return retrievedDocument;
+        Movie movieId = new Movie(key);
+        Logger.getLogger(this.getClass().getSimpleName()).info("Saved document: " + movieId.getMovieId());
+        return movieId;
     }
 
     public void removeDocument(String key) {

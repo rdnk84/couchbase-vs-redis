@@ -28,4 +28,5 @@ public class CouchbaseController {
         return couchbaseService.saveDocument(movie);
     }
 
+
 }

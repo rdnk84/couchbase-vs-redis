@@ -16,7 +16,7 @@ public class JDBCTemplateDocRepo implements PgRepository {
 
     RowMapper<Movie> rowMapper = ((rs, rowNum) -> {
         Movie movie = new Movie();
-        movie.setMovieID(rs.getString("id"));
+        movie.setMovieId(rs.getString("id"));
         movie.setMovieName(rs.getString("name"));
         movie.setMovieDescription(rs.getString("description"));
         return movie;
@@ -44,7 +44,7 @@ public class JDBCTemplateDocRepo implements PgRepository {
     @Override
     public int save(Movie movie) {
         String sql = "INSERT into movies (id, name, description) values(?,?,?)";
-        return jdbcTemplate.update(sql, movie.movieID, movie.getMovieName(), movie.getMovieDescription());
+        return jdbcTemplate.update(sql, movie.movieId, movie.getMovieName(), movie.getMovieDescription());
     }
 
     @Override

@@ -4,18 +4,28 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.util.UUID;
 
-public class Movie  {
 
-    public String movieID;
+public class Movie {
+
+    public String movieId;
     public String movieName;
     public String movieDescription;
 
-    public String getMovieID() {
-        return movieID;
+
+    public Movie() {
     }
 
-    public void setMovieID(String movieID) {
-        this.movieID = movieID;
+    public Movie(String movieId) {
+        this.movieId = movieId;
+    }
+
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieID) {
+        this.movieId = movieID;
     }
 
     public String getMovieName() {
@@ -37,7 +47,7 @@ public class Movie  {
     @Override
     public String toString() {
         return "Movie{" +
-                "id=" + movieID +
+                "id=" + movieId +
                 ", movieName='" + movieName + '\'' +
                 ", movieDescription='" + movieDescription + '\'' +
                 '}';

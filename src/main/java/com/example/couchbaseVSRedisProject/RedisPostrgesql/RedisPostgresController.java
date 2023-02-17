@@ -1,6 +1,7 @@
 package com.example.couchbaseVSRedisProject.RedisPostrgesql;
 
 import com.example.couchbaseVSRedisProject.DocumentNotFoundException;
+import com.example.couchbaseVSRedisProject.Dto.MovieIdDto;
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,13 @@ public class RedisPostgresController {
             Logger.getLogger(this.getClass().getSimpleName()).info("Can not process saving in redis");
         }
 //        throw new DocumentNotFoundException("No document with ID " + key);
+        Logger.getLogger(this.getClass().getSimpleName()).info("Get document id: " + retrievedMovie.getMovieId());
         return null;
     }
 
     @PostMapping("/movie")
-    public void saveMovie(@RequestBody Movie movie) {
-        postgresService.saveMovie(movie);
+    public Movie saveMovie(@RequestBody Movie movie) {
+        return postgresService.saveMovie(movie);
     }
 
     @PatchMapping("/movie/{key}")
@@ -52,6 +54,7 @@ public class RedisPostgresController {
         redisService.removeDocument(key);
         postgresService.updateMovie(movie, key);
     }
+
 
 }
 
