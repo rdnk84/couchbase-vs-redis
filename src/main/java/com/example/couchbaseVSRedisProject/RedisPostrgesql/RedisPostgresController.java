@@ -1,7 +1,7 @@
 package com.example.couchbaseVSRedisProject.RedisPostrgesql;
 
 import com.example.couchbaseVSRedisProject.DocumentNotFoundException;
-import com.example.couchbaseVSRedisProject.Dto.MovieIdDto;
+
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
