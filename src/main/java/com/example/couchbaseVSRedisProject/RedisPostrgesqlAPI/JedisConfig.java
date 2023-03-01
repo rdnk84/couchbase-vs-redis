@@ -1,4 +1,4 @@
-package com.example.couchbaseVSRedisProject.RedisPostrgesql;
+package com.example.couchbaseVSRedisProject.RedisPostrgesqlAPI;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

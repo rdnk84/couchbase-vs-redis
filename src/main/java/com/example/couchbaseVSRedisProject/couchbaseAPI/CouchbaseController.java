@@ -1,11 +1,13 @@
-package com.example.couchbaseVSRedisProject.restWithCouchbase;
+package com.example.couchbaseVSRedisProject.couchbaseAPI;
 
 
+import com.couchbase.client.java.json.JsonObject;
 import com.example.couchbaseVSRedisProject.POJO.Movie;
-import com.example.couchbaseVSRedisProject.POJO.POJODoc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/couchbase")
@@ -20,7 +22,7 @@ public class CouchbaseController {
 
     @GetMapping("/getMovie/{key}")
     public Movie retrieveDocByKey(@PathVariable(value = "key") String key) throws JsonProcessingException {
-        return couchbaseService.getDocument(key);
+        return couchbaseService.getDocumentByKey(key);
     }
 
     @PostMapping("/movie")
@@ -28,5 +30,8 @@ public class CouchbaseController {
         return couchbaseService.saveDocument(movie);
     }
 
-
+    @GetMapping("/search/{searchWord}")
+    public Movie retrieveDocBySearchWord(@PathVariable(value = "searchWord") String searchWord) throws JsonProcessingException {
+        return couchbaseService.getDocumentBySearch(searchWord);
+    }
 }
