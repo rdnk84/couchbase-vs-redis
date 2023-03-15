@@ -25,14 +25,16 @@ public class PostgresService {
     public Movie findById(String id) {
         return docRepo.findById(id);
     }
+    public Movie findByName(String name) {
+        return docRepo.findByName(name);
+    }
 
     public Movie saveMovie(Movie movie) {
         String key = UUID.randomUUID().toString();
         movie.setMovieId(key);
         docRepo.save(movie);
-        Movie movieId = new Movie(key);
-        Logger.getLogger(this.getClass().getSimpleName()).info("Saved document id: " + movieId.getMovieId());
-        return movieId;
+        Logger.getLogger(this.getClass().getSimpleName()).info("Saved document id: " + movie.getMovieId());
+        return movie;
     }
 
     public Movie updateMovie(Movie movie, String id) {

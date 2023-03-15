@@ -23,6 +23,7 @@ public interface PgRepository {
 
     Movie findById(String ID);
 
+    Movie findByName(String name);
 
 
 }

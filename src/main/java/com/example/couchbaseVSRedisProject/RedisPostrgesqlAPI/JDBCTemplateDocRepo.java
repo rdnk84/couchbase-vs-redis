@@ -42,6 +42,11 @@ public class JDBCTemplateDocRepo implements PgRepository {
     }
 
     @Override
+    public Movie findByName(String name) {
+        return jdbcTemplate.queryForObject("SELECT id, name, description FROM movies WHERE name=?", rowMapper, name);
+    }
+
+    @Override
     public int save(Movie movie) {
         String sql = "INSERT into movies (id, name, description) values(?,?,?)";
         return jdbcTemplate.update(sql, movie.movieId, movie.getMovieName(), movie.getMovieDescription());
