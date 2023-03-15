@@ -51,28 +51,16 @@ public class RedisService {
     public void movieByName(String movieName) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
 //                new Query("@\\$\\" + ".movieName:movieName*"));
-                new Query( "." + "movieName"));
+                new Query("." + "movieName"));
         List<Document> docs = movieNameSearch.getDocuments();
-//        Document doc = docs.get(0);
-//      doc.getProperties();
         if (docs != null) {
             for (Document movieItem : docs) {
+
                 movieItem.getProperties();
                 System.out.println("bla");
-                ;
             }
-
-//        ObjectMapper mapper = new ObjectMapper();
-//        Movie movie = null;
-//        if (result != null) {
-//            for (Document movieItem : result) {
-//                String movieAsString = result.get(0).toString();
-//                movie = mapper.readValue(movieAsString, Movie.class);
-//            }
-//            return movie;
+            Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
         }
-        Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
-
     }
 
     public Movie getDocument(String key) throws JsonProcessingException {
