@@ -31,8 +31,7 @@ public class BucketWrapper {
         this.couchbaseCluster = couchbaseCluster;
     }
 
-    private ObjectMapper objectMapper;
-    private StringBuilder stringBuilder;
+
 
     @PostConstruct
     private void init() throws IOException {
@@ -46,6 +45,7 @@ public class BucketWrapper {
 
     public void createFTSIndex(Bucket bucket, String fieldName) throws IOException {
         String indexName = "movs";
+        ObjectMapper objectMapper = new ObjectMapper();
         if (isIndexExist(bucket, indexName, fieldName)) {
             return;
         }
@@ -60,7 +60,7 @@ public class BucketWrapper {
     private String getIndexConfiguration(Bucket bucket, String fieldName) {
         String path = "C:/Users/elru0121/Desktop/TBAPI/movs.json";
         String json = null;
-        stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         try (FileInputStream fis = new FileInputStream(path)) {
             int data = fis.read();
             while (data != -1) {
