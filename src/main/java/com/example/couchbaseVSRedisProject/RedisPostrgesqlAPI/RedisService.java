@@ -15,10 +15,7 @@ import redis.clients.jedis.json.Path2;
 import redis.clients.jedis.search.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -48,20 +45,40 @@ public class RedisService {
     }
 
 
-    public void movieByName(String movieName) throws JsonProcessingException {
+//    public void movieByName(String movieName) throws JsonProcessingException {
+//        SearchResult movieNameSearch = client.ftSearch("movie-index",
+////                new Query("@\\$\\" + ".movieName:movieName*"));
+//                new Query("." + "movieName"));
+//        List<Document> docs = movieNameSearch.getDocuments();
+//        if (docs != null) {
+//            for (Document movieItem : docs) {
+//                movieItem.getProperties();
+//                System.out.println("bla");
+//            }
+//            Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
+//        }
+//    }
+
+    public Movie movieByName(String movieName) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
 //                new Query("@\\$\\" + ".movieName:movieName*"));
-                new Query("." + "movieName"));
-        List<Document> docs = movieNameSearch.getDocuments();
-        if (docs != null) {
-            for (Document movieItem : docs) {
-
-                movieItem.getProperties();
-                System.out.println("bla");
+                new Query(movieName));
+//       List<Document> docs = movieNameSearch.getDocuments();
+        ObjectMapper mapper = new ObjectMapper();
+        Movie movie;
+        Document document = movieNameSearch.getDocuments().get(0);
+        if (document != null) {
+            for (Map.Entry<String, Object> property : document.getProperties()) {
+                String props = property.getValue().toString();
+                movie = mapper.readValue(props, Movie.class);
+                Logger.getLogger(this.getClass().getSimpleName()).info("found" + movie.getMovieId());
+                return movie;
             }
-            Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
         }
+        Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
+        return null;
     }
+
 
     public Movie getDocument(String key) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();

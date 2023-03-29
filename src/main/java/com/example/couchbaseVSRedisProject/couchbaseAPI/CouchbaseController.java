@@ -30,8 +30,13 @@ public class CouchbaseController {
         return couchbaseService.saveDocument(movie);
     }
 
+    @GetMapping("/movieName/{name}")
+    public Movie retrieveDocByName(@PathVariable(value = "name") String movieName) throws JsonProcessingException {
+        return couchbaseService.getDocumentByName(movieName);
+    }
+
     @GetMapping("/search/{searchWord}")
-    public Movie retrieveDocBySearchWord(@PathVariable(value = "searchWord") String searchWord) throws JsonProcessingException {
-        return couchbaseService.getDocumentBySearch(searchWord);
+    public List<Movie> retrieveDocBySearchWord(@PathVariable(value = "searchWord") String searchWord) throws JsonProcessingException {
+        return couchbaseService.getDocumentByMatch(searchWord);
     }
 }
