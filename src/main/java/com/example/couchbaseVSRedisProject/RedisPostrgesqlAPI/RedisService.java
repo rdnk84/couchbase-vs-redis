@@ -43,8 +43,6 @@ public class RedisService {
         rule.setPrefixes(new String[]{"movie:"});
         try {
             client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
-            client.ftCreate("desc-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
-
         } catch (JedisDataException e) {
             System.out.println("Index movie-index already presented");
         }
