@@ -44,17 +44,14 @@ public class Movie {
         this.movieDescription = movieDescription;
     }
 
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                "\"movieId\":" + movieId + "," +
-//                ", \"movieName\":\"" + movieName + "\"," +
-//                ", \"movieDescription\":\"" + movieDescription + '\"' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "{" +
+                "\"movieId\":" + movieId + "," +
+                ", \"movieName\":\"" + movieName + "\"," +
+                ", \"movieDescription\":\"" + movieDescription + '\"' +
+                '}';
+    }
 
-//    @Override
-//    public String toString() {
-//        return "{\"movieId\":\"movieId\", \"movieName\":\"movieName\", \"movieDescription\":\"movieDescription\"}";
-//    }
+
 }

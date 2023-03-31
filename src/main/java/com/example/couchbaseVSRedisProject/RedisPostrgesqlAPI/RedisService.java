@@ -2,9 +2,12 @@ package com.example.couchbaseVSRedisProject.RedisPostrgesqlAPI;
 
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
+import com.example.couchbaseVSRedisProject.couchbaseAPI.CouchbaseService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -16,7 +19,7 @@ import redis.clients.jedis.search.*;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 @Service
 public class RedisService {
@@ -24,6 +27,7 @@ public class RedisService {
     private final UnifiedJedis client;
     private final Schema schema;
     private final IndexDefinition rule;
+    private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
 
     @Autowired
     public RedisService(UnifiedJedis client) {
@@ -35,35 +39,21 @@ public class RedisService {
 
     @PostConstruct
     public void init() {
-        schema.addTextField("$.movieName", 1.0);
+        schema.addTextField("$.movieName", 1.0).addTextField("$.movieDescription", 1.0);
         rule.setPrefixes(new String[]{"movie:"});
         try {
             client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
+            client.ftCreate("desc-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
+
         } catch (JedisDataException e) {
             System.out.println("Index movie-index already presented");
         }
     }
 
 
-//    public void movieByName(String movieName) throws JsonProcessingException {
-//        SearchResult movieNameSearch = client.ftSearch("movie-index",
-////                new Query("@\\$\\" + ".movieName:movieName*"));
-//                new Query("." + "movieName"));
-//        List<Document> docs = movieNameSearch.getDocuments();
-//        if (docs != null) {
-//            for (Document movieItem : docs) {
-//                movieItem.getProperties();
-//                System.out.println("bla");
-//            }
-//            Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
-//        }
-//    }
-
     public Movie movieByName(String movieName) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
-//                new Query("@\\$\\" + ".movieName:movieName*"));
                 new Query(movieName));
-//       List<Document> docs = movieNameSearch.getDocuments();
         ObjectMapper mapper = new ObjectMapper();
         Movie movie;
         Document document = movieNameSearch.getDocuments().get(0);
@@ -71,17 +61,16 @@ public class RedisService {
             for (Map.Entry<String, Object> property : document.getProperties()) {
                 String props = property.getValue().toString();
                 movie = mapper.readValue(props, Movie.class);
-                Logger.getLogger(this.getClass().getSimpleName()).info("found" + movie.getMovieId());
+                logger.info("found" + movie.getMovieId());
                 return movie;
             }
         }
-        Logger.getLogger(this.getClass().getSimpleName()).info("The document is not found: ");
+        logger.info("The document is not found");
         return null;
     }
 
 
     public Movie getDocument(String key) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
         Movie movie;
         String movieKey = "movie:" + key;
         movie = client.jsonGet(movieKey, Movie.class);
@@ -95,18 +84,9 @@ public class RedisService {
     public Movie saveDocument(Movie movie) throws JsonProcessingException {
         String key = "movie:" + movie.getMovieId();
         client.jsonSet(key, Path.ROOT_PATH, movie);
-        Logger.getLogger(this.getClass().getSimpleName()).info("Saved document: " + key);
+        logger.info("Saved document: " + key);
         return movie;
     }
-
-//    public void removeDocument(String key) {
-//        try (Jedis jedis = jedisPool.getResource()) {
-//            jedis.del(key);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        Logger.getLogger(this.getClass().getSimpleName()).info("Document is deleted");
-//    }
 
 
 }

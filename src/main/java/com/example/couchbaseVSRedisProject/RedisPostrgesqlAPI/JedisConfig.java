@@ -13,8 +13,7 @@ import java.time.Duration;
 @Configuration
 public class JedisConfig {
 
-//    @Value("${spring.redis.password:redis}")
-//    private String password;
+
 
     @Value("${spring.redis.host:localhost}")
     private String host;
@@ -26,8 +25,6 @@ public class JedisConfig {
     UnifiedJedis client() {
         HostAndPort config = new HostAndPort(host, port);
         PooledConnectionProvider provider = new PooledConnectionProvider(config);
-
         return new UnifiedJedis(provider);
     }
-
 }

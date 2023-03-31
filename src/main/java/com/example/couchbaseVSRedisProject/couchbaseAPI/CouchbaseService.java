@@ -32,7 +32,7 @@ public class CouchbaseService {
 
     private final Cluster couchbaseCluster;
     static String bucketName = "Movies";
-     ;
+
 
     @Autowired
     public CouchbaseService(Cluster couchbaseCluster) {
@@ -49,9 +49,9 @@ public class CouchbaseService {
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        Movie movieId = new Movie(key);
+//        Movie movieId = new Movie(key);
         logger.info("savedDocument: " + movie.getMovieId());
-        return movieId;
+        return movie;
     }
 
 

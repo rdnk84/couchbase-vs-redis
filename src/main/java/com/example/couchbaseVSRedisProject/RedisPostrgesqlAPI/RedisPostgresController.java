@@ -49,28 +49,28 @@ public class RedisPostgresController {
         return null;
     }
 
-//    @GetMapping("/movieName/{movieName}")
-//    public Movie movieByName(@PathVariable(value = "movieName") String movieName) throws JsonProcessingException {
-//        Movie retrievedMovie;
-//        retrievedMovie = redisService.movieByName(movieName);
-//        if (retrievedMovie != null) {
-//            return retrievedMovie;
-//        }
-//        try {
-//            retrievedMovie = postgresService.findByName(movieName);
-//            if (retrievedMovie != null) {
-//                redisService.saveDocument(retrievedMovie);
-//                return retrievedMovie;
-//            }
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//            Logger.getLogger(this.getClass().getSimpleName()).info("Can not process saving in redis");
-//        }
-////        throw new DocumentNotFoundException("No document with ID " + key);
-//        Logger.getLogger(this.getClass().getSimpleName()).info("Get document id: " + retrievedMovie.getMovieId());
-//        return null;
-//
-//    }
+    @GetMapping("/movieName/{movieName}")
+    public Movie movieByName(@PathVariable(value = "movieName") String movieName) throws JsonProcessingException {
+        Movie retrievedMovie;
+        retrievedMovie = redisService.movieByName(movieName);
+        if (retrievedMovie != null) {
+            return retrievedMovie;
+        }
+        try {
+            retrievedMovie = postgresService.findByName(movieName);
+            if (retrievedMovie != null) {
+                redisService.saveDocument(retrievedMovie);
+                return retrievedMovie;
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            Logger.getLogger(this.getClass().getSimpleName()).info("Can not process saving in redis");
+        }
+//        throw new DocumentNotFoundException("No document with ID " + key);
+        Logger.getLogger(this.getClass().getSimpleName()).info("Get document id: " + retrievedMovie.getMovieId());
+        return null;
+
+    }
 
     @GetMapping("/testforredis/{movieName}")
     public void testForRedis(@PathVariable(value = "movieName") String movieName) throws JsonProcessingException {
