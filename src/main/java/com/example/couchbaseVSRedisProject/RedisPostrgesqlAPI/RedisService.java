@@ -41,17 +41,25 @@ public class RedisService {
     public void init() {
         schema.addTextField("$.movieName", 1.0).addTextField("$.movieDescription", 1.0);
         rule.setPrefixes(new String[]{"movie:"});
-        try {
-            client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
-        } catch (JedisDataException e) {
-            System.out.println("Index movie-index already presented");
+        if(client.ftInfo("movie-index").isEmpty()){
+            try {
+                client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
+            } catch (JedisDataException e) {
+                e.printStackTrace();
+            }
         }
+        logger.info("movie-index is already exists");
+    }
+
+    public boolean isIndexExist() {
+        client.ftInfo("movie-index").isEmpty();
+        return false;
     }
 
 
-    public Movie movieByName(String movieName) throws JsonProcessingException {
+    public Movie searchByWord(String word) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
-                new Query(movieName));
+                new Query(word));
         ObjectMapper mapper = new ObjectMapper();
         Movie movie;
         Document document = movieNameSearch.getDocuments().get(0);

@@ -49,15 +49,15 @@ public class RedisPostgresController {
         return null;
     }
 
-    @GetMapping("/movieName/{movieName}")
-    public Movie movieByName(@PathVariable(value = "movieName") String movieName) throws JsonProcessingException {
+    @GetMapping("/search/{searchWord}")
+    public Movie movieByWord(@PathVariable(value = "searchWord") String searchWord) throws JsonProcessingException {
         Movie retrievedMovie;
-        retrievedMovie = redisService.movieByName(movieName);
+        retrievedMovie = redisService.searchByWord(searchWord);
         if (retrievedMovie != null) {
             return retrievedMovie;
         }
         try {
-            retrievedMovie = postgresService.findByName(movieName);
+            retrievedMovie = postgresService.findByName(searchWord);
             if (retrievedMovie != null) {
                 redisService.saveDocument(retrievedMovie);
                 return retrievedMovie;
@@ -72,22 +72,11 @@ public class RedisPostgresController {
 
     }
 
-    @GetMapping("/testforredis/{movieName}")
-    public void testForRedis(@PathVariable(value = "movieName") String movieName) throws JsonProcessingException {
-         redisService.movieByName(movieName);
-    }
 
     @PostMapping("/movie")
     public Movie saveMovie(@RequestBody Movie movie) {
         return postgresService.saveMovie(movie);
     }
-
-
-//    @PatchMapping("/movie/{key}")
-//    public void updateMovie(@RequestBody Movie movie, @PathVariable(value = "key") String key) {
-//        redisService.removeDocument(key);
-//        postgresService.updateMovie(movie, key);
-//    }
 
 
 }
