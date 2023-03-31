@@ -19,7 +19,7 @@ import redis.clients.jedis.search.*;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-//import java.util.logging.Logger;
+
 
 @Service
 public class RedisService {
@@ -51,13 +51,7 @@ public class RedisService {
         logger.info("movie-index is already exists");
     }
 
-    public boolean isIndexExist() {
-        client.ftInfo("movie-index").isEmpty();
-        return false;
-    }
-
-
-    public Movie searchByWord(String word) throws JsonProcessingException {
+     public Movie searchByWord(String word) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
                 new Query(word));
         ObjectMapper mapper = new ObjectMapper();
