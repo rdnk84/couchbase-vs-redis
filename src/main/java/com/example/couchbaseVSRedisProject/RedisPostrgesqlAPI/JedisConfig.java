@@ -13,8 +13,6 @@ import java.time.Duration;
 @Configuration
 public class JedisConfig {
 
-
-
     @Value("${spring.redis.host:localhost}")
     private String host;
     @Value("${spring.redis.port:12346}")

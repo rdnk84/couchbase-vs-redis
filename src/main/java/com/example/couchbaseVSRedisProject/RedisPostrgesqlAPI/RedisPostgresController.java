@@ -30,7 +30,7 @@ public class RedisPostgresController {
     @GetMapping("/getMovie/{key}")
     public Movie movieById(@PathVariable(value = "key") String key) throws JsonProcessingException, DocumentNotFoundException {
         Movie retrievedMovie;
-        retrievedMovie = redisService.getDocument(key);
+        retrievedMovie = redisService.movieByKey(key);
         if (retrievedMovie != null) {
             return retrievedMovie;
         }
@@ -49,15 +49,15 @@ public class RedisPostgresController {
         return null;
     }
 
-    @GetMapping("/search/{searchWord}")
-    public Movie movieByWord(@PathVariable(value = "searchWord") String searchWord) throws JsonProcessingException {
+    @GetMapping("/movieName")
+    public Movie movieByName(@RequestParam(value="name") String name) throws JsonProcessingException {
         Movie retrievedMovie;
-        retrievedMovie = redisService.searchByWord(searchWord);
+        retrievedMovie = redisService.movieByName(name);
         if (retrievedMovie != null) {
             return retrievedMovie;
         }
         try {
-            retrievedMovie = postgresService.findByName(searchWord);
+            retrievedMovie = postgresService.findByName(name);
             if (retrievedMovie != null) {
                 redisService.saveDocument(retrievedMovie);
                 return retrievedMovie;
@@ -69,7 +69,11 @@ public class RedisPostgresController {
 //        throw new DocumentNotFoundException("No document with ID " + key);
         Logger.getLogger(this.getClass().getSimpleName()).info("Get document id: " + retrievedMovie.getMovieId());
         return null;
+    }
 
+    @GetMapping("/search/{searchWord}")
+    public List<Movie> moviesBySearchWord(@PathVariable(value="searchWord") String searchWord) throws JsonProcessingException {
+        return redisService.documentsByMatch(searchWord);
     }
 
 

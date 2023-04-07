@@ -2,6 +2,7 @@ package com.example.couchbaseVSRedisProject.couchbaseAPI;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
@@ -71,36 +72,37 @@ public class CouchbaseService {
     }
 
     public Movie getDocumentByName(String movieName) throws JsonProcessingException {
-        Movie movie = new Movie();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             QueryResult result = couchbaseCluster.query("select t.* from  Movies as t where movieName = ?",
                     QueryOptions.queryOptions().parameters(JsonArray.from(movieName)));
             for (JsonObject row : result.rowsAsObject()) {
-                movie = objectMapper.readValue(row.toString(), Movie.class);
+                Movie movie = objectMapper.readValue(row.toString(), Movie.class);
+                logger.info("retrievedDocument: " + movieName.toString());
+                return movie;
             }
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        logger.info("retrievedDocument: " + movieName.toString());
-        return movie;
+        logger.info("Document is not found");
+        return null;
     }
 
 
     public List<Movie> getDocumentByMatch(String searchWord) {
-        Movie movie;
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<Movie> allDocuments = new ArrayList<>();
         try {
             SearchResult result = couchbaseCluster.searchQuery("movs", new MatchPhraseQuery(searchWord));
+            Collection collection = couchbaseCluster.bucket(bucketName).defaultCollection();
             for (SearchRow row : result.rows()) {
-                GetResult value = couchbaseCluster.bucket(bucketName).defaultCollection().get(row.id());
+                GetResult value = collection.get(row.id());
                 JsonObject jsonObject = value.contentAsObject();
                 String resultAsString = jsonObject.toString();
-                movie = objectMapper.readValue(resultAsString, Movie.class);
+                Movie movie = objectMapper.readValue(resultAsString, Movie.class);
                 allDocuments.add(movie);
-                logger.info("Found movie: " + movie.getMovieName());
             }
+            logger.info("Found " + allDocuments.size() + " movies");
             return allDocuments;
         } catch (Exception e) {
             logger.info(e.getMessage() + " happened");

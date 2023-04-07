@@ -26,38 +26,38 @@ public class RedisService {
 
     private final UnifiedJedis client;
     private final Schema schema;
-    private final IndexDefinition rule;
+    private final IndexDefinition indexDefinition;
     private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
 
     @Autowired
     public RedisService(UnifiedJedis client) {
         this.client = client;
         schema = new Schema();
-        rule = new IndexDefinition(IndexDefinition.Type.JSON);
-
+        indexDefinition = new IndexDefinition(IndexDefinition.Type.JSON);
     }
 
     @PostConstruct
-    public void init() {
-        schema.addTextField("$.movieName", 1.0).addTextField("$.movieDescription", 1.0);
-        rule.setPrefixes(new String[]{"movie:"});
-        if(client.ftInfo("movie-index").isEmpty()){
-            try {
-                client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(rule), schema);
-            } catch (JedisDataException e) {
-                e.printStackTrace();
-            }
+    public void idxDefinition() {
+        schema.addField(new Schema.Field(FieldName.of("$.movieName").as("name"), Schema.FieldType.TEXT, true, false))
+                .addField(new Schema.Field(FieldName.of("$.movieDescription").as("description"), Schema.FieldType.TEXT, true, false));
+        indexDefinition.setPrefixes(new String[]{"movie:"});
+        try {
+            client.ftCreate("movie-index", IndexOptions.defaultOptions().setDefinition(indexDefinition), schema);
+        } catch (JedisDataException e) {
+            logger.info("Secondary index exists already");
         }
-        logger.info("movie-index is already exists");
     }
 
-     public Movie searchByWord(String word) throws JsonProcessingException {
+
+    public Movie movieByName(String name) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
-                new Query(word));
+                new Query(name));
         ObjectMapper mapper = new ObjectMapper();
         Movie movie;
-        Document document = movieNameSearch.getDocuments().get(0);
-        if (document != null) {
+        Query query = new Query(name);
+
+        if (movieNameSearch.getDocuments().size() != 0) {
+            Document document = movieNameSearch.getDocuments().get(0);
             for (Map.Entry<String, Object> property : document.getProperties()) {
                 String props = property.getValue().toString();
                 movie = mapper.readValue(props, Movie.class);
@@ -70,13 +70,35 @@ public class RedisService {
     }
 
 
-    public Movie getDocument(String key) throws JsonProcessingException {
+    public Movie movieByKey(String key) throws JsonProcessingException {
         Movie movie;
         String movieKey = "movie:" + key;
         movie = client.jsonGet(movieKey, Movie.class);
         if (movie != null) {
             return movie;
         }
+        return null;
+    }
+
+    public List<Movie> documentsByMatch(String word) throws JsonProcessingException {
+        Movie movie;
+        SearchResult movieNameSearch = client.ftSearch("movie-index", new Query(word));
+        List<Document> documents = movieNameSearch.getDocuments();
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayList<Movie> moviesFound = new ArrayList<>();
+        if (documents != null) {
+            for (int i = 0; i < documents.size(); i++) {
+                Document document = movieNameSearch.getDocuments().get(i);
+                for (Map.Entry<String, Object> property : document.getProperties()) {
+                    String props = property.getValue().toString();
+                    movie = mapper.readValue(props, Movie.class);
+                    moviesFound.add(movie);
+                    logger.info("found" + movie.getMovieId());
+                }
+            }
+            return moviesFound;
+        }
+        logger.info("The document is not found");
         return null;
     }
 

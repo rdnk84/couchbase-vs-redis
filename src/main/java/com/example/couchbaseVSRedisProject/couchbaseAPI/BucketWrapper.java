@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,11 +27,13 @@ public class BucketWrapper {
     static String bucketName = "Movies";
     private final Cluster couchbaseCluster;
 
+    @Value("${couchbase.fts.index.path:C:/Users/elru0121/Desktop/TBAPI/movs.json}")
+    private String path;
+
     @Autowired
     public BucketWrapper(Cluster couchbaseCluster) {
         this.couchbaseCluster = couchbaseCluster;
     }
-
 
 
     @PostConstruct
@@ -58,7 +61,6 @@ public class BucketWrapper {
 
 
     private String getIndexConfiguration(Bucket bucket, String fieldName) {
-        String path = "C:/Users/elru0121/Desktop/TBAPI/movs.json";
         String json = null;
         StringBuilder stringBuilder = new StringBuilder();
         try (FileInputStream fis = new FileInputStream(path)) {
