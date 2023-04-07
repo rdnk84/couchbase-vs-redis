@@ -2,19 +2,15 @@ package com.example.couchbaseVSRedisProject.RedisPostrgesqlAPI;
 
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
-import com.example.couchbaseVSRedisProject.couchbaseAPI.CouchbaseService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.json.Path;
-import redis.clients.jedis.json.Path2;
 import redis.clients.jedis.search.*;
 
 import javax.annotation.PostConstruct;
@@ -29,9 +25,12 @@ public class RedisService {
     private final IndexDefinition indexDefinition;
     private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
 
+    private final ObjectMapper objectMapper;
+
     @Autowired
-    public RedisService(UnifiedJedis client) {
+    public RedisService(UnifiedJedis client, ObjectMapper objectMapper) {
         this.client = client;
+        this.objectMapper = objectMapper;
         schema = new Schema();
         indexDefinition = new IndexDefinition(IndexDefinition.Type.JSON);
     }
@@ -52,15 +51,12 @@ public class RedisService {
     public Movie movieByName(String name) throws JsonProcessingException {
         SearchResult movieNameSearch = client.ftSearch("movie-index",
                 new Query(name));
-        ObjectMapper mapper = new ObjectMapper();
         Movie movie;
-        Query query = new Query(name);
-
         if (movieNameSearch.getDocuments().size() != 0) {
             Document document = movieNameSearch.getDocuments().get(0);
             for (Map.Entry<String, Object> property : document.getProperties()) {
                 String props = property.getValue().toString();
-                movie = mapper.readValue(props, Movie.class);
+                movie = objectMapper.readValue(props, Movie.class);
                 logger.info("found" + movie.getMovieId());
                 return movie;
             }
@@ -84,14 +80,13 @@ public class RedisService {
         Movie movie;
         SearchResult movieNameSearch = client.ftSearch("movie-index", new Query(word));
         List<Document> documents = movieNameSearch.getDocuments();
-        ObjectMapper mapper = new ObjectMapper();
         ArrayList<Movie> moviesFound = new ArrayList<>();
         if (documents != null) {
             for (int i = 0; i < documents.size(); i++) {
                 Document document = movieNameSearch.getDocuments().get(i);
                 for (Map.Entry<String, Object> property : document.getProperties()) {
                     String props = property.getValue().toString();
-                    movie = mapper.readValue(props, Movie.class);
+                    movie = objectMapper.readValue(props, Movie.class);
                     moviesFound.add(movie);
                     logger.info("found" + movie.getMovieId());
                 }
@@ -109,6 +104,5 @@ public class RedisService {
         logger.info("Saved document: " + key);
         return movie;
     }
-
 
 }

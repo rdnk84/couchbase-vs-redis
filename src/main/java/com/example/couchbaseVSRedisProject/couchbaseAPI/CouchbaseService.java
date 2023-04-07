@@ -6,7 +6,6 @@ import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
-import com.couchbase.client.java.manager.query.QueryIndexManager;
 import com.couchbase.client.java.query.QueryOptions;
 import com.couchbase.client.java.query.QueryResult;
 import com.couchbase.client.java.search.queries.MatchPhraseQuery;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 //import java.util.logging.Logger;
@@ -32,12 +30,14 @@ public class CouchbaseService {
     private static final Logger logger = LoggerFactory.getLogger(CouchbaseService.class);
 
     private final Cluster couchbaseCluster;
+    private final ObjectMapper objectMapper;
     static String bucketName = "Movies";
 
 
     @Autowired
-    public CouchbaseService(Cluster couchbaseCluster) {
+    public CouchbaseService(Cluster couchbaseCluster, ObjectMapper objectMapper) {
         this.couchbaseCluster = couchbaseCluster;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -50,7 +50,6 @@ public class CouchbaseService {
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-//        Movie movieId = new Movie(key);
         logger.info("savedDocument: " + movie.getMovieId());
         return movie;
     }
@@ -58,7 +57,6 @@ public class CouchbaseService {
 
     public Movie getDocumentByKey(String key) throws JsonProcessingException {
         String resultAsString = null;
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             GetResult result = couchbaseCluster.bucket(bucketName).defaultCollection().get(key);
             JsonObject jsonObject = result.contentAsObject();
@@ -72,7 +70,6 @@ public class CouchbaseService {
     }
 
     public Movie getDocumentByName(String movieName) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             QueryResult result = couchbaseCluster.query("select t.* from  Movies as t where movieName = ?",
                     QueryOptions.queryOptions().parameters(JsonArray.from(movieName)));
@@ -90,7 +87,6 @@ public class CouchbaseService {
 
 
     public List<Movie> getDocumentByMatch(String searchWord) {
-        ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<Movie> allDocuments = new ArrayList<>();
         try {
             SearchResult result = couchbaseCluster.searchQuery("movs", new MatchPhraseQuery(searchWord));
