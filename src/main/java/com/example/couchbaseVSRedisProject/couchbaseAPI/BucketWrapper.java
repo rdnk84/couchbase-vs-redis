@@ -5,7 +5,7 @@ import com.couchbase.client.core.error.IndexNotFoundException;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.manager.search.SearchIndex;
-import com.example.couchbaseVSRedisProject.couchbaseAPI.ftsSearch.SearchIndexMainClass;
+//import com.example.couchbaseVSRedisProject.couchbaseAPI.ftsSearch.SearchIndexMainClass;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -2,17 +2,21 @@ package com.example.couchbaseVSRedisProject.RedisPostrgesqlAPI;
 
 import com.example.couchbaseVSRedisProject.POJO.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 @Repository
 public class JDBCTemplateDocRepo implements PgRepository {
 
     private JdbcTemplate jdbcTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(JDBCTemplateDocRepo.class);
 
     RowMapper<Movie> rowMapper = ((rs, rowNum) -> {
         Movie movie = new Movie();
@@ -43,7 +47,12 @@ public class JDBCTemplateDocRepo implements PgRepository {
 
     @Override
     public Movie findByName(String name) {
-        return jdbcTemplate.queryForObject("SELECT id, name, description FROM movies WHERE name=?", rowMapper, name);
+        try {
+            return jdbcTemplate.queryForObject("SELECT id, name, description FROM movies WHERE name=?", rowMapper, name);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Movie is not found");
+            return null;
+        }
     }
 
     @Override
@@ -57,7 +66,8 @@ public class JDBCTemplateDocRepo implements PgRepository {
         String sql = "UPDATE movies SET name = ?, description = ? where id=?";
         int update = jdbcTemplate.update(sql, movie.getMovieName(), movie.getMovieDescription(), ID);
         if (update == 1) {
-            Logger.getLogger(this.getClass().getSimpleName()).info("Movie is updated");
+            logger.info("Movie is updated");
+//            Logger.getLogger(this.getClass().getSimpleName()).info("Movie is updated");
         }
         return update;
     }

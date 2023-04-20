@@ -50,7 +50,7 @@ public class CouchbaseService {
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        logger.info("savedDocument: " + movie.getMovieId());
+        logger.info("saved Document: " + movie.getMovieId());
         return movie;
     }
 
@@ -65,7 +65,7 @@ public class CouchbaseService {
             System.out.println("ERROR: " + e.getMessage());
         }
         Movie retrievedDocument = objectMapper.readValue(resultAsString, Movie.class);
-        logger.info("retrievedDocument: " + retrievedDocument.getMovieId());
+        logger.info("retrieved Document: " + retrievedDocument.getMovieId());
         return retrievedDocument;
     }
 
